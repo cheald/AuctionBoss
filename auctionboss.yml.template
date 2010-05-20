@@ -1,0 +1,5 @@
+user: your_username
+pass: your_password
+root: "http://www.wowarmory.com/auctionhouse/"
+query: "http://www.wowarmory.com/auctionhouse/search.json?sort=rarity&reverse=false&pageSize=50&rhtml=false&%s"
+database: auctionboss
