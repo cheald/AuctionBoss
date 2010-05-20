@@ -16,6 +16,8 @@ module WowArmory
 			def initialize(yaml)
 				@config = YAML::load(File.open(yaml).read)
 				@agent = Mechanize.new {|agent| agent.user_agent = "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.4) Gecko/20100513 Firefox/3.6.4" }
+				@agent.pre_connect_hooks << lambda { |params| params[:request]['Connection'] = 'keep-alive' }
+
 				@db = Mongo::Connection.new.db(@config["database"])
 				@db["auctions"].create_index("auc", :unique => true)
 				@db["auctions"].create_index(["n", Mongo::ASCENDING])
@@ -48,7 +50,6 @@ module WowArmory
 			end		
 			
 			def search(query)
-				# &n=%squal=0&start=%d
 				pieces = {}
 				pieces["n"] = CGI::escape(query["query"]) unless query["query"].blank?
 				pieces["qual"] = query["qual"] || 0
@@ -67,13 +68,18 @@ module WowArmory
 					startTime = Time.now.to_f
 
 					page = JSON::load(result.body)
+					if page["auctionSearch"].nil? then
+						puts "Hit throttle! Skipping request..."
+						next
+					end
 					totalCt ||= page["auctionSearch"]["total"]
 					start += 50
 					
 					break if page["auctionSearch"]["auctions"].empty?
 					answers += page["auctionSearch"]["auctions"]
 					endTime = Time.now.to_f
-					sleep(1.4 - (endTime - startTime))
+					sleepTime = 0.55
+					sleep(sleepTime)
 				end
 				return answers
 			end

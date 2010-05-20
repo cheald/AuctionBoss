@@ -27,6 +27,7 @@ while true do
 			auction["date"] = Time.new
 			ah.db["auctions"].update({"auc" => auction["auc"]}, auction, {:upsert => true})
 		end
+		ah.db["auctions"].update({:first_seen => {:$exists => false}}, {:$set => {:first_seen => Time.new}})
 	end
 	puts colorize(":: Scan finished\t- sleeping for 1 minutes ::", "1;32;40")
 	sleep(60)
