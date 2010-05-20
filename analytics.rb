@@ -56,7 +56,7 @@ query = nil
 item = ARGV.join(" ").chomp
 query = {:n => item} unless item.blank?
 analytics.get_sales(1.day.ago, 10.minutes.ago, query).each do |key, val|
-	puts sprintf(csv, key, 
+	puts sprintf(nice, key, 
 		val[:volume],
 		val[:units],
 		raw_to_wow(val[:sum] / val[:volume]),

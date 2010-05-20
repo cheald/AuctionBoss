@@ -17,6 +17,8 @@ module WowArmory
 				@config = YAML::load(File.open(yaml).read)
 				@agent = Mechanize.new {|agent| agent.user_agent = "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.4) Gecko/20100513 Firefox/3.6.4" }
 				@db = Mongo::Connection.new.db(@config["database"])
+				@db["auctions"].create_index("auc", :unique => true)
+				@db["auctions"].create_index(["n", Mongo::ASCENDING])
 			end
 			
 			def login!
