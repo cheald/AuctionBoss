@@ -115,8 +115,7 @@ module WowArmory
 			end
 			
 			def get_sales(after, before, query = nil)
-				q = (query || {}).merge(:date => {:$gte => after, :$lte => before}, :time => {:$ne => 1})
-				puts q.inspect
+				q = (query || {}).merge(:date => {:$gte => after, :$lte => before}, :time => {:$gt => 1})
 				@db["auctions"].find(q)
 			end
 		end
