@@ -20,7 +20,7 @@ module WowArmory
 
 				@db = Mongo::Connection.new.db(@config["database"])
 				@db["auctions"].create_index("auc", :unique => true)
-				@db["auctions"].create_index(["n", Mongo::ASCENDING])
+				@db["auctions"].create_index([["n", Mongo::ASCENDING]])
 			end
 			
 			def login!
